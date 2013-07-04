@@ -1,0 +1,40 @@
+<!doctype html>
+<html style="height: 100%; width: 100%;">
+	<head>
+		<meta charset="utf-8">
+		<title>Upload example: simple progress</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script src="../upload.js"></script>
+		<script>
+			jQuery(function ($) {
+				$('form').upload();
+
+				$('form').on('uploading', function (e, vars, index, event, settings) {
+					$('progress').val(vars.uploadedPercent);
+
+					if (vars.uploaded === vars.total) {
+						$('span').html('Finalizing…');
+					} else {
+						$('span').html(vars.uploadedPercent + '%');
+					}
+				});
+
+				$('form').on('finished', function (e, vars, index) {
+					if (vars.numberDone === vars.files.length) {
+						$('span').html('Done.');
+					}
+				});
+			});
+		</script>
+	</head>
+	<body>
+
+		<form action="receive-dump.php" method="post" enctype="multipart/form-data">
+			<input type="file" name="file" multiple>
+			<input type="submit">
+		</form>
+
+		<progress value="0" max="100"></progress> <span></span>
+
+	</body>
+</html>
