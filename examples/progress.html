@@ -1,0 +1,86 @@
+<!doctype html>
+<html style="height: 100%; width: 100%;">
+	<head>
+		<meta charset="utf-8">
+		<title>Upload example: progress</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script src="../upload.js"></script>
+		<script>
+			jQuery(function ($) {
+				$('form').upload();
+
+				var bytesToString = function (bytes) {
+					var size = bytes;
+					if (size > (1000 * 1000 * 1000)) {
+						size = (Math.round(size / (1000 * 1000 * 10)) / 100) + ' GB';
+					} else if (size > (1000 * 1000)) {
+						size = (Math.round(size / (1000 * 10)) / 100) + ' MB';
+					} else if (size > 1000) {
+						size = (Math.round(size / 10) / 100) + ' kB';
+					} else {
+						size += ' B';
+					}
+					return size;
+				}
+
+				$('form').on('filesAdded', function (e, params) {
+					var files = params.all;
+
+					$('div#thumbs').empty();
+					$('div#thumbs').append('<ul></ul>');
+
+					for (var i = 0; i < files.length; i++) {
+						$('div#thumbs > ul').append(
+							'<li id="file-' + files[i].index + '">' +
+								'<p>File name: ' + files[i].file.name + '</p>' +
+								'<p>File size: ' + bytesToString(files[i].file.size) + '</p>' +
+								'<p>File type: ' + files[i].file.type + '</p>' +
+								'<progress value="0" max="100"></progress> <span></span>' +
+							'</li>'
+						);
+					}
+				});
+
+				$('form').on('uploading', function (e, vars, index, event, settings) {
+					$('progress.mainProgress').val(vars.uploadedPercent);
+
+					$('li#file-' + index + ' progress').val(vars.files[index].uploadedPercent);
+
+					if (event.loaded === event.total) {
+						$('li#file-' + index + ' span').html('Finalizing…');
+					} else {
+						$('li#file-' + index + ' span').html(vars.files[index].uploadedPercent + '%');
+					}
+
+					if (vars.uploaded === vars.total) {
+						$('span.mainProgress').html('Finalizing…');
+					} else {
+						$('span.mainProgress').html(vars.uploadedPercent + '%');
+					}
+				});
+
+				$('form').on('finished', function (e, vars, index) {
+					$('li#file-' + index + ' span').html('Done.');
+
+					if (vars.numberDone === vars.files.length) {
+						$('span.mainProgress').html('Done.');
+					}
+				});
+			});
+		</script>
+	</head>
+	<body>
+
+		<form action="receive-dump.php" method="post" enctype="multipart/form-data">
+			<input type="file" name="file" multiple>
+			<input type="submit">
+		</form>
+
+		<progress class="mainProgress" value="0" max="100"></progress> <span class="mainProgress"></span>
+
+		<div id="thumbs">
+			No files.
+		</div>
+
+	</body>
+</html>
