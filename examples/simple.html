@@ -1,0 +1,22 @@
+<!doctype html>
+<html style="height: 100%; width: 100%;">
+	<head>
+		<meta charset="utf-8">
+		<title>Upload example: simple</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script src="../upload.js"></script>
+		<script>
+			jQuery(function ($) {
+				$('form').upload();
+			});
+		</script>
+	</head>
+	<body>
+
+		<form action="receive-dump.php" method="post" enctype="multipart/form-data">
+			<input type="file" name="file" multiple>
+			<input type="submit">
+		</form>
+
+	</body>
+</html>
