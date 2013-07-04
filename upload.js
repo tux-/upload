@@ -4,6 +4,7 @@
 		sendVars: function (param) {},
 		uploading: function (param) {},
 		finished: function (param) {},
+		indexName: 'index',
 		mode: 1
 	};
 
@@ -105,7 +106,7 @@
 
 				var thisUploaded = 0;
 				var fd = new FormData();
-				fd.append('index', file.index);
+				fd.append(settings.indexName, file.index);
 				$(this).find('input').each(function () {
 					if ($(this).attr('name') !== undefined) {
 						fd.append($(this).attr('name'), $(this).val());
