@@ -58,7 +58,6 @@
 								}
 							})(vars.files[i]);
 						}
-						return;
 					} else if (settings.mode === 2) {
 						for (var i = 0; i < vars.files.length; i++) {
 							(function sendFile (file) {
@@ -149,6 +148,15 @@
 					vars.numberDone++;
 					vars.isReady = true;
 					vars.isProcessing = false;
+
+					// Firefox has issues with if (event.loaded === event.total) { in the req function above, adding this here works as a workaround.
+					if (/Firefox/i.test(navigator.userAgent)) {
+						vars.isSending = false;
+						vars.files[file.index].uploadedPercent = 100;
+						$(that).trigger('uploading', [vars, file.index, {loaded: file.size, total: file.size}, settings]);
+					}
+					// Firefox fix
+
 					$(that).trigger('finished', [vars, file.index]);
 				});
 			};
